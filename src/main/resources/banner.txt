@@ -1,0 +1,11 @@
+   ___      _              ___               _
+  / _ \    | |     ___    / __|    ___    __| |    ___
+ | (_) |   | |    / -_)  | (__    / _ \  / _` |   / -_)
+  \___/   _|_|_   \___|   \___|   \___/  \__,_|   \___|
+_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|
+"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'
+${AnsiColor.BRIGHT_GREEN}
+MANIFEST.MF 版本号：${application.version}
+APPLICATION.VERSION：${application.formatted-version}
+SPRING.VERSION：${spring-boot.version}
+SPRING.VERSION：：${spring-boot.formatted-version}
