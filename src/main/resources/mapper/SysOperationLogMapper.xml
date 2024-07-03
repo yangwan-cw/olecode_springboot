@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ioomex.olecodeApp.mapper.SysOperationLogMapper">
+  <resultMap id="BaseResultMap" type="com.ioomex.olecodeApp.model.entity.SysOperationLog">
+    <!--@mbg.generated-->
+    <!--@Table sys_operation_log-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="onlyId" jdbcType="VARCHAR" property="onlyid" />
+    <result column="log" jdbcType="VARCHAR" property="log" />
+    <result column="api_address" jdbcType="VARCHAR" property="apiAddress" />
+    <result column="package_path" jdbcType="VARCHAR" property="packagePath" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="param_json" jdbcType="LONGVARCHAR" property="paramJson" />
+    <result column="result_json" jdbcType="LONGVARCHAR" property="resultJson" />
+    <result column="error_msg" jdbcType="LONGVARCHAR" property="errorMsg" />
+    <result column="cost_time" jdbcType="LONGVARCHAR" property="costTime" />
+    <result column="oper_ip" jdbcType="VARCHAR" property="operIp" />
+    <result column="oper_ip_address" jdbcType="VARCHAR" property="operIpAddress" />
+    <result column="oper_user_name" jdbcType="VARCHAR" property="operUserName" />
+    <result column="oper_time" jdbcType="TIMESTAMP" property="operTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, onlyId, log, api_address, package_path, `status`, param_json, result_json, error_msg, 
+    cost_time, oper_ip, oper_ip_address, oper_user_name, oper_time
+  </sql>
+</mapper>
