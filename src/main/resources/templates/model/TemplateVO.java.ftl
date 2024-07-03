@@ -56,7 +56,7 @@ public class ${upperDataKey}VO implements Serializable {
     /**
      * 创建用户信息
      */
-    private UserVO user;
+    private UserVO sysUser;
 
     /**
      * 封装类转对象

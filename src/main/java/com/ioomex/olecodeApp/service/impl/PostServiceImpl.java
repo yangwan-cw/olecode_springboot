@@ -15,7 +15,7 @@ import com.ioomex.olecodeApp.model.dto.post.PostQueryRequest;
 import com.ioomex.olecodeApp.model.entity.Post;
 import com.ioomex.olecodeApp.model.entity.PostFavour;
 import com.ioomex.olecodeApp.model.entity.PostThumb;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.vo.PostVO;
 import com.ioomex.olecodeApp.model.vo.UserVO;
 import com.ioomex.olecodeApp.service.PostService;
@@ -232,25 +232,25 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         long postId = post.getId();
         // 1. 关联查询用户信息
         Long userId = post.getUserId();
-        User user = null;
+        SysUser sysUser = null;
         if (userId != null && userId > 0) {
-            user = userService.getById(userId);
+            sysUser = userService.getById(userId);
         }
-        UserVO userVO = userService.getUserVO(user);
+        UserVO userVO = userService.getUserVO(sysUser);
         postVO.setUser(userVO);
         // 2. 已登录，获取用户点赞、收藏状态
-        User loginUser = userService.getLoginUserPermitNull(request);
-        if (loginUser != null) {
+        SysUser loginSysUser = userService.getLoginUserPermitNull(request);
+        if (loginSysUser != null) {
             // 获取点赞
             QueryWrapper<PostThumb> postThumbQueryWrapper = new QueryWrapper<>();
             postThumbQueryWrapper.in("postId", postId);
-            postThumbQueryWrapper.eq("userId", loginUser.getId());
+            postThumbQueryWrapper.eq("userId", loginSysUser.getId());
             PostThumb postThumb = postThumbMapper.selectOne(postThumbQueryWrapper);
             postVO.setHasThumb(postThumb != null);
             // 获取收藏
             QueryWrapper<PostFavour> postFavourQueryWrapper = new QueryWrapper<>();
             postFavourQueryWrapper.in("postId", postId);
-            postFavourQueryWrapper.eq("userId", loginUser.getId());
+            postFavourQueryWrapper.eq("userId", loginSysUser.getId());
             PostFavour postFavour = postFavourMapper.selectOne(postFavourQueryWrapper);
             postVO.setHasFavour(postFavour != null);
         }
@@ -266,25 +266,25 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         }
         // 1. 关联查询用户信息
         Set<Long> userIdSet = postList.stream().map(Post::getUserId).collect(Collectors.toSet());
-        Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
-                .collect(Collectors.groupingBy(User::getId));
+        Map<Long, List<SysUser>> userIdUserListMap = userService.listByIds(userIdSet).stream()
+                .collect(Collectors.groupingBy(SysUser::getId));
         // 2. 已登录，获取用户点赞、收藏状态
         Map<Long, Boolean> postIdHasThumbMap = new HashMap<>();
         Map<Long, Boolean> postIdHasFavourMap = new HashMap<>();
-        User loginUser = userService.getLoginUserPermitNull(request);
-        if (loginUser != null) {
+        SysUser loginSysUser = userService.getLoginUserPermitNull(request);
+        if (loginSysUser != null) {
             Set<Long> postIdSet = postList.stream().map(Post::getId).collect(Collectors.toSet());
-            loginUser = userService.getLoginUser(request);
+            loginSysUser = userService.getLoginUser(request);
             // 获取点赞
             QueryWrapper<PostThumb> postThumbQueryWrapper = new QueryWrapper<>();
             postThumbQueryWrapper.in("postId", postIdSet);
-            postThumbQueryWrapper.eq("userId", loginUser.getId());
+            postThumbQueryWrapper.eq("userId", loginSysUser.getId());
             List<PostThumb> postPostThumbList = postThumbMapper.selectList(postThumbQueryWrapper);
             postPostThumbList.forEach(postPostThumb -> postIdHasThumbMap.put(postPostThumb.getPostId(), true));
             // 获取收藏
             QueryWrapper<PostFavour> postFavourQueryWrapper = new QueryWrapper<>();
             postFavourQueryWrapper.in("postId", postIdSet);
-            postFavourQueryWrapper.eq("userId", loginUser.getId());
+            postFavourQueryWrapper.eq("userId", loginSysUser.getId());
             List<PostFavour> postFavourList = postFavourMapper.selectList(postFavourQueryWrapper);
             postFavourList.forEach(postFavour -> postIdHasFavourMap.put(postFavour.getPostId(), true));
         }
@@ -292,11 +292,11 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         List<PostVO> postVOList = postList.stream().map(post -> {
             PostVO postVO = PostVO.objToVo(post);
             Long userId = post.getUserId();
-            User user = null;
+            SysUser sysUser = null;
             if (userIdUserListMap.containsKey(userId)) {
-                user = userIdUserListMap.get(userId).get(0);
+                sysUser = userIdUserListMap.get(userId).get(0);
             }
-            postVO.setUser(userService.getUserVO(user));
+            postVO.setUser(userService.getUserVO(sysUser));
             postVO.setHasThumb(postIdHasThumbMap.getOrDefault(post.getId(), false));
             postVO.setHasFavour(postIdHasFavourMap.getOrDefault(post.getId(), false));
             return postVO;

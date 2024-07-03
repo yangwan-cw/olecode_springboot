@@ -8,7 +8,7 @@ import com.ioomex.olecodeApp.constant.FileConstant;
 import com.ioomex.olecodeApp.exception.BusinessException;
 import com.ioomex.olecodeApp.manager.CosManager;
 import com.ioomex.olecodeApp.model.dto.file.UploadFileRequest;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.enums.FileUploadBizEnum;
 import com.ioomex.olecodeApp.service.UserService;
 import java.io.File;
@@ -60,11 +60,11 @@ public class FileController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         validFile(multipartFile, fileUploadBizEnum);
-        User loginUser = userService.getLoginUser(request);
+        SysUser loginSysUser = userService.getLoginUser(request);
         // 文件目录：根据业务、用户来划分
         String uuid = RandomStringUtils.randomAlphanumeric(8);
         String filename = uuid + "-" + multipartFile.getOriginalFilename();
-        String filepath = String.format("/%s/%s/%s", fileUploadBizEnum.getValue(), loginUser.getId(), filename);
+        String filepath = String.format("/%s/%s/%s", fileUploadBizEnum.getValue(), loginSysUser.getId(), filename);
         File file = null;
         try {
             // 上传文件

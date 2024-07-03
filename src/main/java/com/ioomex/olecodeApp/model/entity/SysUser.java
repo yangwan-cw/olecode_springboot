@@ -15,9 +15,9 @@ import lombok.Data;
  * @author ioomex
  * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
  */
-@TableName(value = "user")
+@TableName(value = "sys_user")
 @Data
-public class User implements Serializable {
+public class SysUser implements Serializable {
 
     /**
      * id

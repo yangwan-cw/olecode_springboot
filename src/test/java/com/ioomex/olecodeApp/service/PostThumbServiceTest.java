@@ -1,6 +1,7 @@
 package com.ioomex.olecodeApp.service;
 
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
+
 import javax.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,16 +20,16 @@ class PostThumbServiceTest {
     @Resource
     private PostThumbService postThumbService;
 
-    private static final User loginUser = new User();
+    private static final SysUser LOGIN_SYS_USER = new SysUser();
 
     @BeforeAll
     static void setUp() {
-        loginUser.setId(1L);
+        LOGIN_SYS_USER.setId(1L);
     }
 
     @Test
     void doPostThumb() {
-        int i = postThumbService.doPostThumb(1L, loginUser);
+        int i = postThumbService.doPostThumb(1L, LOGIN_SYS_USER);
         Assertions.assertTrue(i >= 0);
     }
 }

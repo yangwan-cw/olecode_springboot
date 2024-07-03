@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ioomex.olecodeApp.model.entity.Post;
 import com.ioomex.olecodeApp.model.entity.PostFavour;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 
 /**
  * 帖子收藏服务
@@ -20,10 +20,10 @@ public interface PostFavourService extends IService<PostFavour> {
      * 帖子收藏
      *
      * @param postId
-     * @param loginUser
+     * @param loginSysUser
      * @return
      */
-    int doPostFavour(long postId, User loginUser);
+    int doPostFavour(long postId, SysUser loginSysUser);
 
     /**
      * 分页获取用户收藏的帖子列表

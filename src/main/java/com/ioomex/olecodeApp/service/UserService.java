@@ -3,7 +3,7 @@ package com.ioomex.olecodeApp.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ioomex.olecodeApp.model.dto.user.UserQueryRequest;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.vo.LoginUserVO;
 import com.ioomex.olecodeApp.model.vo.UserVO;
 import java.util.List;
@@ -16,7 +16,7 @@ import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
  * @author ioomex
  * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
  */
-public interface UserService extends IService<User> {
+public interface UserService extends IService<SysUser> {
 
     /**
      * 用户注册
@@ -53,7 +53,7 @@ public interface UserService extends IService<User> {
      * @param request
      * @return
      */
-    User getLoginUser(HttpServletRequest request);
+    SysUser getLoginUser(HttpServletRequest request);
 
     /**
      * 获取当前登录用户（允许未登录）
@@ -61,7 +61,7 @@ public interface UserService extends IService<User> {
      * @param request
      * @return
      */
-    User getLoginUserPermitNull(HttpServletRequest request);
+    SysUser getLoginUserPermitNull(HttpServletRequest request);
 
     /**
      * 是否为管理员
@@ -74,10 +74,10 @@ public interface UserService extends IService<User> {
     /**
      * 是否为管理员
      *
-     * @param user
+     * @param sysUser
      * @return
      */
-    boolean isAdmin(User user);
+    boolean isAdmin(SysUser sysUser);
 
     /**
      * 用户注销
@@ -92,23 +92,23 @@ public interface UserService extends IService<User> {
      *
      * @return
      */
-    LoginUserVO getLoginUserVO(User user);
+    LoginUserVO getLoginUserVO(SysUser sysUser);
 
     /**
      * 获取脱敏的用户信息
      *
-     * @param user
+     * @param sysUser
      * @return
      */
-    UserVO getUserVO(User user);
+    UserVO getUserVO(SysUser sysUser);
 
     /**
      * 获取脱敏的用户信息
      *
-     * @param userList
+     * @param sysUserList
      * @return
      */
-    List<UserVO> getUserVO(List<User> userList);
+    List<UserVO> getUserVO(List<SysUser> sysUserList);
 
     /**
      * 获取查询条件
@@ -116,6 +116,6 @@ public interface UserService extends IService<User> {
      * @param userQueryRequest
      * @return
      */
-    QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
+    QueryWrapper<SysUser> getQueryWrapper(UserQueryRequest userQueryRequest);
 
 }

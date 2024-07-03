@@ -10,7 +10,7 @@ import com.ioomex.olecodeApp.constant.CommonConstant;
 import com.ioomex.olecodeApp.exception.BusinessException;
 import com.ioomex.olecodeApp.mapper.UserMapper;
 import com.ioomex.olecodeApp.model.dto.user.UserQueryRequest;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.enums.UserRoleEnum;
 import com.ioomex.olecodeApp.model.vo.LoginUserVO;
 import com.ioomex.olecodeApp.model.vo.UserVO;
@@ -35,7 +35,7 @@ import org.springframework.util.DigestUtils;
  */
 @Service
 @Slf4j
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements UserService {
 
     /**
      * 盐值，混淆密码
@@ -60,7 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         synchronized (userAccount.intern()) {
             // 账户不能重复
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("userAccount", userAccount);
             long count = this.baseMapper.selectCount(queryWrapper);
             if (count > 0) {
@@ -69,14 +69,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 2. 加密
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
             // 3. 插入数据
-            User user = new User();
-            user.setUserAccount(userAccount);
-            user.setUserPassword(encryptPassword);
-            boolean saveResult = this.save(user);
+            SysUser sysUser = new SysUser();
+            sysUser.setUserAccount(userAccount);
+            sysUser.setUserPassword(encryptPassword);
+            boolean saveResult = this.save(sysUser);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
             }
-            return user.getId();
+            return sysUser.getId();
         }
     }
 
@@ -95,18 +95,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 2. 加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
         // 查询用户是否存在
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
         queryWrapper.eq("userPassword", encryptPassword);
-        User user = this.baseMapper.selectOne(queryWrapper);
+        SysUser sysUser = this.baseMapper.selectOne(queryWrapper);
         // 用户不存在
-        if (user == null) {
-            log.info("user login failed, userAccount cannot match userPassword");
+        if (sysUser == null) {
+            log.info("sysUser login failed, userAccount cannot match userPassword");
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
         // 3. 记录用户的登录态
-        request.getSession().setAttribute(USER_LOGIN_STATE, user);
-        return this.getLoginUserVO(user);
+        request.getSession().setAttribute(USER_LOGIN_STATE, sysUser);
+        return this.getLoginUserVO(sysUser);
     }
 
     @Override
@@ -116,28 +116,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 单机锁
         synchronized (unionId.intern()) {
             // 查询用户是否已存在
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("unionId", unionId);
-            User user = this.getOne(queryWrapper);
+            SysUser sysUser = this.getOne(queryWrapper);
             // 被封号，禁止登录
-            if (user != null && UserRoleEnum.BAN.getValue().equals(user.getUserRole())) {
+            if (sysUser != null && UserRoleEnum.BAN.getValue().equals(sysUser.getUserRole())) {
                 throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "该用户已被封，禁止登录");
             }
             // 用户不存在则创建
-            if (user == null) {
-                user = new User();
-                user.setUnionId(unionId);
-                user.setMpOpenId(mpOpenId);
-                user.setUserAvatar(wxOAuth2UserInfo.getHeadImgUrl());
-                user.setUserName(wxOAuth2UserInfo.getNickname());
-                boolean result = this.save(user);
+            if (sysUser == null) {
+                sysUser = new SysUser();
+                sysUser.setUnionId(unionId);
+                sysUser.setMpOpenId(mpOpenId);
+                sysUser.setUserAvatar(wxOAuth2UserInfo.getHeadImgUrl());
+                sysUser.setUserName(wxOAuth2UserInfo.getNickname());
+                boolean result = this.save(sysUser);
                 if (!result) {
                     throw new BusinessException(ErrorCode.SYSTEM_ERROR, "登录失败");
                 }
             }
             // 记录用户的登录态
-            request.getSession().setAttribute(USER_LOGIN_STATE, user);
-            return getLoginUserVO(user);
+            request.getSession().setAttribute(USER_LOGIN_STATE, sysUser);
+            return getLoginUserVO(sysUser);
         }
     }
 
@@ -148,20 +148,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return
      */
     @Override
-    public User getLoginUser(HttpServletRequest request) {
+    public SysUser getLoginUser(HttpServletRequest request) {
         // 先判断是否已登录
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        User currentUser = (User) userObj;
-        if (currentUser == null || currentUser.getId() == null) {
+        SysUser currentSysUser = (SysUser) userObj;
+        if (currentSysUser == null || currentSysUser.getId() == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
         // 从数据库查询（追求性能的话可以注释，直接走缓存）
-        long userId = currentUser.getId();
-        currentUser = this.getById(userId);
-        if (currentUser == null) {
+        long userId = currentSysUser.getId();
+        currentSysUser = this.getById(userId);
+        if (currentSysUser == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
-        return currentUser;
+        return currentSysUser;
     }
 
     /**
@@ -171,15 +171,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return
      */
     @Override
-    public User getLoginUserPermitNull(HttpServletRequest request) {
+    public SysUser getLoginUserPermitNull(HttpServletRequest request) {
         // 先判断是否已登录
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        User currentUser = (User) userObj;
-        if (currentUser == null || currentUser.getId() == null) {
+        SysUser currentSysUser = (SysUser) userObj;
+        if (currentSysUser == null || currentSysUser.getId() == null) {
             return null;
         }
         // 从数据库查询（追求性能的话可以注释，直接走缓存）
-        long userId = currentUser.getId();
+        long userId = currentSysUser.getId();
         return this.getById(userId);
     }
 
@@ -193,13 +193,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean isAdmin(HttpServletRequest request) {
         // 仅管理员可查询
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        User user = (User) userObj;
-        return isAdmin(user);
+        SysUser sysUser = (SysUser) userObj;
+        return isAdmin(sysUser);
     }
 
     @Override
-    public boolean isAdmin(User user) {
-        return user != null && UserRoleEnum.ADMIN.getValue().equals(user.getUserRole());
+    public boolean isAdmin(SysUser sysUser) {
+        return sysUser != null && UserRoleEnum.ADMIN.getValue().equals(sysUser.getUserRole());
     }
 
     /**
@@ -218,35 +218,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public LoginUserVO getLoginUserVO(User user) {
-        if (user == null) {
+    public LoginUserVO getLoginUserVO(SysUser sysUser) {
+        if (sysUser == null) {
             return null;
         }
         LoginUserVO loginUserVO = new LoginUserVO();
-        BeanUtils.copyProperties(user, loginUserVO);
+        BeanUtils.copyProperties(sysUser, loginUserVO);
         return loginUserVO;
     }
 
     @Override
-    public UserVO getUserVO(User user) {
-        if (user == null) {
+    public UserVO getUserVO(SysUser sysUser) {
+        if (sysUser == null) {
             return null;
         }
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
+        BeanUtils.copyProperties(sysUser, userVO);
         return userVO;
     }
 
     @Override
-    public List<UserVO> getUserVO(List<User> userList) {
-        if (CollUtil.isEmpty(userList)) {
+    public List<UserVO> getUserVO(List<SysUser> sysUserList) {
+        if (CollUtil.isEmpty(sysUserList)) {
             return new ArrayList<>();
         }
-        return userList.stream().map(this::getUserVO).collect(Collectors.toList());
+        return sysUserList.stream().map(this::getUserVO).collect(Collectors.toList());
     }
 
     @Override
-    public QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest) {
+    public QueryWrapper<SysUser> getQueryWrapper(UserQueryRequest userQueryRequest) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
@@ -258,7 +258,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String userRole = userQueryRequest.getUserRole();
         String sortField = userQueryRequest.getSortField();
         String sortOrder = userQueryRequest.getSortOrder();
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(id != null, "id", id);
         queryWrapper.eq(StringUtils.isNotBlank(unionId), "unionId", unionId);
         queryWrapper.eq(StringUtils.isNotBlank(mpOpenId), "mpOpenId", mpOpenId);

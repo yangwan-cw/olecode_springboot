@@ -10,7 +10,7 @@ import com.ioomex.olecodeApp.model.dto.post.PostQueryRequest;
 import com.ioomex.olecodeApp.model.dto.postfavour.PostFavourAddRequest;
 import com.ioomex.olecodeApp.model.dto.postfavour.PostFavourQueryRequest;
 import com.ioomex.olecodeApp.model.entity.Post;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.vo.PostVO;
 import com.ioomex.olecodeApp.service.PostFavourService;
 import com.ioomex.olecodeApp.service.PostService;
@@ -60,9 +60,9 @@ public class PostFavourController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 登录才能操作
-        final User loginUser = userService.getLoginUser(request);
+        final SysUser loginSysUser = userService.getLoginUser(request);
         long postId = postFavourAddRequest.getPostId();
-        int result = postFavourService.doPostFavour(postId, loginUser);
+        int result = postFavourService.doPostFavour(postId, loginSysUser);
         return ResultUtils.success(result);
     }
 
@@ -78,13 +78,13 @@ public class PostFavourController {
         if (postQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        SysUser loginSysUser = userService.getLoginUser(request);
         long current = postQueryRequest.getCurrent();
         long size = postQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         Page<Post> postPage = postFavourService.listFavourPostByPage(new Page<>(current, size),
-                postService.getQueryWrapper(postQueryRequest), loginUser.getId());
+                postService.getQueryWrapper(postQueryRequest), loginSysUser.getId());
         return ResultUtils.success(postService.getPostVOPage(postPage, request));
     }
 

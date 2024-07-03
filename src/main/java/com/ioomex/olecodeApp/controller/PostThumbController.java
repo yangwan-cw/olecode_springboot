@@ -5,7 +5,7 @@ import com.ioomex.olecodeApp.common.ErrorCode;
 import com.ioomex.olecodeApp.common.ResultUtils;
 import com.ioomex.olecodeApp.exception.BusinessException;
 import com.ioomex.olecodeApp.model.dto.postthumb.PostThumbAddRequest;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.service.PostThumbService;
 import com.ioomex.olecodeApp.service.UserService;
 import javax.annotation.Resource;
@@ -50,9 +50,9 @@ public class PostThumbController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 登录才能点赞
-        final User loginUser = userService.getLoginUser(request);
+        final SysUser loginSysUser = userService.getLoginUser(request);
         long postId = postThumbAddRequest.getPostId();
-        int result = postThumbService.doPostThumb(postId, loginUser);
+        int result = postThumbService.doPostThumb(postId, loginSysUser);
         return ResultUtils.success(result);
     }
 

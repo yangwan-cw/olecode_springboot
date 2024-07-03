@@ -3,7 +3,7 @@ package com.ioomex.olecodeApp.aop;
 import com.ioomex.olecodeApp.annotation.AuthCheck;
 import com.ioomex.olecodeApp.common.ErrorCode;
 import com.ioomex.olecodeApp.exception.BusinessException;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.enums.UserRoleEnum;
 import com.ioomex.olecodeApp.service.UserService;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -43,14 +43,14 @@ public class AuthInterceptor {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
         // 当前登录用户
-        User loginUser = userService.getLoginUser(request);
+        SysUser loginSysUser = userService.getLoginUser(request);
         UserRoleEnum mustRoleEnum = UserRoleEnum.getEnumByValue(mustRole);
         // 不需要权限，放行
         if (mustRoleEnum == null) {
             return joinPoint.proceed();
         }
         // 必须有该权限才通过
-        UserRoleEnum userRoleEnum = UserRoleEnum.getEnumByValue(loginUser.getUserRole());
+        UserRoleEnum userRoleEnum = UserRoleEnum.getEnumByValue(loginSysUser.getUserRole());
         if (userRoleEnum == null) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }

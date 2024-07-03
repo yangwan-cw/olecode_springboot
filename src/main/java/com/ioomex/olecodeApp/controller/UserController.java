@@ -1,7 +1,6 @@
 package com.ioomex.olecodeApp.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.ioomex.olecodeApp.annotation.AuthCheck;
 import com.ioomex.olecodeApp.annotation.OperationLog;
 import com.ioomex.olecodeApp.common.BaseResponse;
@@ -18,7 +17,7 @@ import com.ioomex.olecodeApp.model.dto.user.UserQueryRequest;
 import com.ioomex.olecodeApp.model.dto.user.UserRegisterRequest;
 import com.ioomex.olecodeApp.model.dto.user.UserUpdateMyRequest;
 import com.ioomex.olecodeApp.model.dto.user.UserUpdateRequest;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.vo.LoginUserVO;
 import com.ioomex.olecodeApp.model.vo.UserVO;
 import com.ioomex.olecodeApp.service.UserService;
@@ -148,8 +147,8 @@ public class UserController {
      */
     @GetMapping("/get/login")
     public BaseResponse<LoginUserVO> getLoginUser(HttpServletRequest request) {
-        User user = userService.getLoginUser(request);
-        return ResultUtils.success(userService.getLoginUserVO(user));
+        SysUser sysUser = userService.getLoginUser(request);
+        return ResultUtils.success(userService.getLoginUserVO(sysUser));
     }
 
     // endregion
@@ -169,15 +168,15 @@ public class UserController {
         if (userAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = new User();
-        BeanUtils.copyProperties(userAddRequest, user);
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(userAddRequest, sysUser);
         // 默认密码 12345678
         String defaultPassword = "12345678";
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + defaultPassword).getBytes());
-        user.setUserPassword(encryptPassword);
-        boolean result = userService.save(user);
+        sysUser.setUserPassword(encryptPassword);
+        boolean result = userService.save(sysUser);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        return ResultUtils.success(user.getId());
+        return ResultUtils.success(sysUser.getId());
     }
 
     /**
@@ -211,9 +210,9 @@ public class UserController {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = new User();
-        BeanUtils.copyProperties(userUpdateRequest, user);
-        boolean result = userService.updateById(user);
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(userUpdateRequest, sysUser);
+        boolean result = userService.updateById(sysUser);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }
@@ -227,13 +226,13 @@ public class UserController {
      */
     @GetMapping("/get")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<User> getUserById(long id, HttpServletRequest request) {
+    public BaseResponse<SysUser> getUserById(long id, HttpServletRequest request) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = userService.getById(id);
-        ThrowUtils.throwIf(user == null, ErrorCode.NOT_FOUND_ERROR);
-        return ResultUtils.success(user);
+        SysUser sysUser = userService.getById(id);
+        ThrowUtils.throwIf(sysUser == null, ErrorCode.NOT_FOUND_ERROR);
+        return ResultUtils.success(sysUser);
     }
 
     /**
@@ -245,9 +244,9 @@ public class UserController {
      */
     @GetMapping("/get/vo")
     public BaseResponse<UserVO> getUserVOById(long id, HttpServletRequest request) {
-        BaseResponse<User> response = getUserById(id, request);
-        User user = response.getData();
-        return ResultUtils.success(userService.getUserVO(user));
+        BaseResponse<SysUser> response = getUserById(id, request);
+        SysUser sysUser = response.getData();
+        return ResultUtils.success(userService.getUserVO(sysUser));
     }
 
     /**
@@ -259,11 +258,11 @@ public class UserController {
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest,
-            HttpServletRequest request) {
+    public BaseResponse<Page<SysUser>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest,
+                                                      HttpServletRequest request) {
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
-        Page<User> userPage = userService.page(new Page<>(current, size),
+        Page<SysUser> userPage = userService.page(new Page<>(current, size),
                 userService.getQueryWrapper(userQueryRequest));
         return ResultUtils.success(userPage);
     }
@@ -285,7 +284,7 @@ public class UserController {
         long size = userQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<User> userPage = userService.page(new Page<>(current, size),
+        Page<SysUser> userPage = userService.page(new Page<>(current, size),
                 userService.getQueryWrapper(userQueryRequest));
         Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
         List<UserVO> userVO = userService.getUserVO(userPage.getRecords());
@@ -308,11 +307,11 @@ public class UserController {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
-        User user = new User();
-        BeanUtils.copyProperties(userUpdateMyRequest, user);
-        user.setId(loginUser.getId());
-        boolean result = userService.updateById(user);
+        SysUser loginSysUser = userService.getLoginUser(request);
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(userUpdateMyRequest, sysUser);
+        sysUser.setId(loginSysUser.getId());
+        boolean result = userService.updateById(sysUser);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }

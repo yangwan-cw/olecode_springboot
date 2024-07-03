@@ -10,7 +10,7 @@ import com.ioomex.olecodeApp.exception.BusinessException;
 import com.ioomex.olecodeApp.mapper.PostFavourMapper;
 import com.ioomex.olecodeApp.model.entity.Post;
 import com.ioomex.olecodeApp.model.entity.PostFavour;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.service.PostFavourService;
 import com.ioomex.olecodeApp.service.PostService;
 import javax.annotation.Resource;
@@ -35,18 +35,18 @@ public class PostFavourServiceImpl extends ServiceImpl<PostFavourMapper, PostFav
      * 帖子收藏
      *
      * @param postId
-     * @param loginUser
+     * @param loginSysUser
      * @return
      */
     @Override
-    public int doPostFavour(long postId, User loginUser) {
+    public int doPostFavour(long postId, SysUser loginSysUser) {
         // 判断是否存在
         Post post = postService.getById(postId);
         if (post == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
         // 是否已帖子收藏
-        long userId = loginUser.getId();
+        long userId = loginSysUser.getId();
         // 每个用户串行帖子收藏
         // 锁必须要包裹住事务方法
         PostFavourService postFavourService = (PostFavourService) AopContext.currentProxy();

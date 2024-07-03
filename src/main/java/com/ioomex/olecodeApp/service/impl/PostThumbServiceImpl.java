@@ -7,7 +7,7 @@ import com.ioomex.olecodeApp.exception.BusinessException;
 import com.ioomex.olecodeApp.mapper.PostThumbMapper;
 import com.ioomex.olecodeApp.model.entity.Post;
 import com.ioomex.olecodeApp.model.entity.PostThumb;
-import com.ioomex.olecodeApp.model.entity.User;
+import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.service.PostService;
 import com.ioomex.olecodeApp.service.PostThumbService;
 import javax.annotation.Resource;
@@ -32,18 +32,18 @@ public class PostThumbServiceImpl extends ServiceImpl<PostThumbMapper, PostThumb
      * 点赞
      *
      * @param postId
-     * @param loginUser
+     * @param loginSysUser
      * @return
      */
     @Override
-    public int doPostThumb(long postId, User loginUser) {
+    public int doPostThumb(long postId, SysUser loginSysUser) {
         // 判断实体是否存在，根据类别获取实体
         Post post = postService.getById(postId);
         if (post == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
         // 是否已点赞
-        long userId = loginUser.getId();
+        long userId = loginSysUser.getId();
         // 每个用户串行点赞
         // 锁必须要包裹住事务方法
         PostThumbService postThumbService = (PostThumbService) AopContext.currentProxy();

@@ -5,7 +5,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ioomex.olecodeApp.mapper.UserMapper">
-    <resultMap id="BaseResultMap" type="com.ioomex.olecodeApp.model.entity.User">
+    <resultMap id="BaseResultMap" type="com.ioomex.olecodeApp.model.entity.SysUser">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="unionId" column="unionId" jdbcType="VARCHAR"/>
         <result property="mpOpenId" column="mpOpenId" jdbcType="VARCHAR"/>
