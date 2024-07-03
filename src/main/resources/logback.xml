@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <!-- 日志文件路径配置 -->
+    <property name="LOG_ERROR_HOME" value="logs/error" />
+    <property name="LOG_INFO_HOME" value="logs/info" />
+
+    <!-- 从 Spring 配置中获取应用名 -->
+    <springProperty scope="context" name="SPRING_NAME" source="spring.application.name" defaultValue="deft"/>
+
+    <!-- 控制台日志输出 -->
+    <appender name="CONSOLE-LOG" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 过滤器可以过滤掉特定的日志级别，这里示例中没有应用过滤器 -->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!-- 日志输出格式：日期、线程、日志级别、日志名、日志消息 -->
+            <pattern>%red(%d{yyyy-MM-dd HH:mm:ss.SSS}) %green([%thread]) %highlight(%-5level) %boldMagenta(%logger{10}) - %cyan(%msg%n)</pattern>
+        </layout>
+    </appender>
+
+    <!-- INFO 级别及以上日志输出到文件 -->
+    <appender name="INFO-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤器：排除 ERROR 级别日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%-5level] [%logger:%line] --%mdc{client} %msg%n</pattern>
+        </encoder>
+        <!-- 滚动策略：根据文件大小和日期进行滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_INFO_HOME}/%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>200MB</maxFileSize> <!-- 单个日志文件最大200MB -->
+            <maxHistory>30</maxHistory> <!-- 保留最近30天的日志 -->
+            <totalSizeCap>1GB</totalSizeCap> <!-- 总日志大小上限1GB -->
+        </rollingPolicy>
+    </appender>
+
+    <!-- ERROR 级别日志输出到文件 -->
+    <appender name="ERROR-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤器：仅保留 ERROR 级别日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%-5level] [%logger:%line] --%mdc{client} %msg%n</pattern>
+        </encoder>
+        <!-- 滚动策略：根据文件大小和日期进行滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_ERROR_HOME}/%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>200MB</maxFileSize> <!-- 单个日志文件最大200MB -->
+            <maxHistory>30</maxHistory> <!-- 保留最近30天的日志 -->
+            <totalSizeCap>2GB</totalSizeCap> <!-- 总日志大小上限2GB -->
+        </rollingPolicy>
+    </appender>
+
+    <!-- 异步输出 INFO 级别及以上日志 -->
+    <appender name="ASYNC-INFO" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 队列中不会丢弃任何日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 队列大小设置为256 -->
+        <queueSize>256</queueSize>
+        <!-- 引用 INFO-LOG appender -->
+        <appender-ref ref="INFO-LOG"/>
+    </appender>
+
+    <!-- 异步输出 ERROR 级别日志 -->
+    <appender name="ASYNC-ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 队列中不会丢弃任何日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 队列大小设置为256 -->
+        <queueSize>256</queueSize>
+        <!-- 引用 ERROR-LOG appender -->
+        <appender-ref ref="ERROR-LOG"/>
+    </appender>
+
+    <!-- 根日志配置，设置日志级别为 INFO -->
+    <root level="info">
+        <!-- 引用控制台日志输出 -->
+        <appender-ref ref="CONSOLE-LOG" />
+        <!-- 异步输出 INFO 级别及以上日志 -->
+        <appender-ref ref="ASYNC-INFO" />
+        <!-- 异步输出 ERROR 级别日志 -->
+        <appender-ref ref="ASYNC-ERROR" />
+    </root>
+</configuration>
