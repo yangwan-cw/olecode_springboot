@@ -55,7 +55,7 @@ import static com.ioomex.olecodeApp.service.impl.UserServiceImpl.SALT;
 @RequestMapping("/user")
 @Slf4j
 @Api(tags = "用户管理")
-public class UserController {
+public class SysUserController {
 
     @Resource
     private UserService userService;
