@@ -1,7 +1,9 @@
 package com.ioomex.olecodeApp.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.ioomex.olecodeApp.annotation.AuthCheck;
+import com.ioomex.olecodeApp.annotation.OperationLog;
 import com.ioomex.olecodeApp.common.BaseResponse;
 import com.ioomex.olecodeApp.common.DeleteRequest;
 import com.ioomex.olecodeApp.common.ErrorCode;
@@ -26,6 +28,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
@@ -51,6 +55,7 @@ import static com.ioomex.olecodeApp.service.impl.UserServiceImpl.SALT;
 @RestController
 @RequestMapping("/user")
 @Slf4j
+@Api(tags = "用户管理")
 public class UserController {
 
     @Resource
@@ -59,15 +64,9 @@ public class UserController {
     @Resource
     private WxOpenConfig wxOpenConfig;
 
-    // region 登录相关
-
-    /**
-     * 用户注册
-     *
-     * @param userRegisterRequest
-     * @return
-     */
     @PostMapping("/register")
+    @ApiOperation(value = "注册接口")
+    @OperationLog(log = "注册接口")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
         if (userRegisterRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
