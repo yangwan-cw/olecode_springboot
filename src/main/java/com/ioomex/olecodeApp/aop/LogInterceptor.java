@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ioomex.olecodeApp.annotation.OperationLog;
+import com.ioomex.olecodeApp.exception.BusinessException;
 import com.ioomex.olecodeApp.mapper.SysOperationLogMapper;
 import com.ioomex.olecodeApp.model.dto.builder.SysOperationLogBuilder;
 import com.ioomex.olecodeApp.model.entity.SysOperationLog;
@@ -77,7 +78,13 @@ public class LogInterceptor {
         Throwable errorLog = null;
         try {
             result = point.proceed();
-        } catch (Throwable e) {
+        } catch (BusinessException e) {
+            // 处理已知的业务异常
+            log.error("BusinessException", e);
+            // 继续抛出 BusinessException，让 @ExceptionHandler 处理 或者直接抛出
+            throw e;
+//            throw new BusinessException(e.getCode(),e.getMessage());
+        }  catch (Throwable e) {
             errorLog = e;
             throw new RuntimeException(e);
         } finally {
