@@ -8,7 +8,8 @@ import java.util.Date;
 
 /**
  * 题目
- * @TableName question
+ * @author ioomex
+ * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
  */
 @TableName(value ="question")
 @Data

@@ -1,12 +1,13 @@
 package com.ioomex.olecodeApp.enums;
 
+import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Getter
 public enum JudgeInfoMessageEnum {
 
     ACCEPTED("成功", "Accepted"),

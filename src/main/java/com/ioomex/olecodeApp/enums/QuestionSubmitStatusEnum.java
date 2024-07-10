@@ -1,5 +1,6 @@
 package com.ioomex.olecodeApp.enums;
 
+import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Arrays;
@@ -7,6 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author yangwan
+ * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
+ */
+@Getter
 public enum QuestionSubmitStatusEnum {
 
     // 0 - 待判题、1 - 判题中、2 - 成功、3 - 失败
@@ -26,8 +32,6 @@ public enum QuestionSubmitStatusEnum {
 
     /**
      * 获取值列表
-     *
-     * @return
      */
     public static List<Integer> getValues() {
         return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
@@ -36,8 +40,6 @@ public enum QuestionSubmitStatusEnum {
     /**
      * 根据 value 获取枚举
      *
-     * @param value
-     * @return
      */
     public static QuestionSubmitStatusEnum getEnumByValue(Integer value) {
         if (ObjectUtils.isEmpty(value)) {

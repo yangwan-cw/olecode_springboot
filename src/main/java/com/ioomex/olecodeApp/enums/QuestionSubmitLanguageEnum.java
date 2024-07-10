@@ -1,5 +1,6 @@
 package com.ioomex.olecodeApp.enums;
 
+import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Arrays;
@@ -7,11 +8,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author yangwan
+ * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
+ */
+@Getter
 public enum QuestionSubmitLanguageEnum {
 
-    JAVA("java", "java"),
-    CPLUSPLUS("c++", "c++"),
-    GOLANG("golang", "golang");
+    JAVA("java", "java"), CPLUSPLUS("c++", "c++"), GOLANG("golang", "golang");
 
     private final String text;
 
@@ -24,8 +28,6 @@ public enum QuestionSubmitLanguageEnum {
 
     /**
      * 获取值列表
-     *
-     * @return
      */
     public static List<String> getValues() {
         return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
@@ -34,8 +36,6 @@ public enum QuestionSubmitLanguageEnum {
     /**
      * 根据 value 获取枚举
      *
-     * @param value
-     * @return
      */
     public static QuestionSubmitLanguageEnum getEnumByValue(String value) {
         if (ObjectUtils.isEmpty(value)) {
@@ -49,11 +49,4 @@ public enum QuestionSubmitLanguageEnum {
         return null;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public String getText() {
-        return text;
-    }
 }

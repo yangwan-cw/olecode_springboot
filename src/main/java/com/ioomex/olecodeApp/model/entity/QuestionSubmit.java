@@ -8,7 +8,8 @@ import java.util.Date;
 
 /**
  * 题目提交
- * @TableName question_submit
+ * @author yangwan
+ * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
  */
 @TableName(value ="question_submit")
 @Data
