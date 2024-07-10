@@ -65,8 +65,7 @@ public class SysUserController {
     private WxOpenConfig wxOpenConfig;
 
     @PostMapping("/register")
-    @ApiOperation(value = "注册接口")
-    @OperationLog(log = "注册接口")
+    @ApiOperation(value = "注册接口", notes = "注册")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
         if (ObjectUtils.isEmpty(userRegisterRequest)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -83,12 +82,9 @@ public class SysUserController {
 
     /**
      * 用户登录
-     *
-     * @param userLoginRequest
-     * @param request
-     * @return
      */
     @PostMapping("/login")
+    @ApiOperation(value = "用户登录", notes = "登录")
     public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
         if (ObjectUtils.isEmpty(userLoginRequest)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -106,6 +102,7 @@ public class SysUserController {
      * 用户登录（微信开放平台）
      */
     @GetMapping("/login/wx_open")
+    @ApiOperation(value = "用户登录（微信开放平台）", notes = "用户登录微信")
     public BaseResponse<LoginUserVO> userLoginByWxOpen(HttpServletRequest request, HttpServletResponse response,
                                                        @RequestParam("code") String code) {
         WxOAuth2AccessToken accessToken;
@@ -128,10 +125,9 @@ public class SysUserController {
     /**
      * 用户注销
      *
-     * @param request
-     * @return
      */
     @PostMapping("/logout")
+    @ApiOperation(value = "用户注销", notes = "注销")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
         if (ObjectUtils.isEmpty(request)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -143,10 +139,9 @@ public class SysUserController {
     /**
      * 获取当前登录用户
      *
-     * @param request
-     * @return
      */
     @GetMapping("/get/login")
+    @ApiOperation(value = "获取当前登录用户", notes = "获取")
     public BaseResponse<LoginUserVO> getLoginUser(HttpServletRequest request) {
         SysUser sysUser = userService.getLoginUser(request);
         return ResultUtils.success(userService.getLoginUserVO(sysUser));
@@ -154,13 +149,10 @@ public class SysUserController {
 
     /**
      * 创建用户
-     *
-     * @param userAddRequest
-     * @param request
-     * @return
      */
     @PostMapping("/add")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @ApiOperation(value = "创建用户", notes = "创建")
     public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest, HttpServletRequest request) {
         if (userAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -179,12 +171,10 @@ public class SysUserController {
     /**
      * 删除用户
      *
-     * @param deleteRequest
-     * @param request
-     * @return
      */
     @PostMapping("/delete")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @ApiOperation(value = "删除用户", notes = "删除")
     public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -196,12 +186,10 @@ public class SysUserController {
     /**
      * 更新用户
      *
-     * @param userUpdateRequest
-     * @param request
-     * @return
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @ApiOperation(value = "更新用户", notes = "更新")
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
                                             HttpServletRequest request) {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
@@ -217,12 +205,10 @@ public class SysUserController {
     /**
      * 根据 id 获取用户（仅管理员）
      *
-     * @param id
-     * @param request
-     * @return
      */
     @GetMapping("/get")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @ApiOperation(value = "根据 id 获取用户仅管理员", notes = "更新")
     public BaseResponse<SysUser> getUserById(long id, HttpServletRequest request) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -235,11 +221,9 @@ public class SysUserController {
     /**
      * 根据 id 获取包装类
      *
-     * @param id
-     * @param request
-     * @return
      */
     @GetMapping("/get/vo")
+    @ApiOperation(value = "根据 id 获取包装类", notes = "获取")
     public BaseResponse<UserVO> getUserVOById(long id, HttpServletRequest request) {
         BaseResponse<SysUser> response = getUserById(id, request);
         SysUser sysUser = response.getData();
@@ -249,12 +233,10 @@ public class SysUserController {
     /**
      * 分页获取用户列表（仅管理员）
      *
-     * @param userQueryRequest
-     * @param request
-     * @return
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @ApiOperation(value = "分页获取用户列表（仅管理员）", notes = "分页获取")
     public BaseResponse<Page<SysUser>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest,
                                                       HttpServletRequest request) {
         long current = userQueryRequest.getCurrent();
@@ -267,11 +249,9 @@ public class SysUserController {
     /**
      * 分页获取用户封装列表
      *
-     * @param userQueryRequest
-     * @param request
-     * @return
      */
     @PostMapping("/list/page/vo")
+    @ApiOperation(value = "分页获取用户封装列表", notes = "分页获取")
     public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryRequest userQueryRequest,
                                                        HttpServletRequest request) {
         if (userQueryRequest == null) {
@@ -289,16 +269,13 @@ public class SysUserController {
         return ResultUtils.success(userVOPage);
     }
 
-    // endregion
 
     /**
      * 更新个人信息
      *
-     * @param userUpdateMyRequest
-     * @param request
-     * @return
      */
     @PostMapping("/update/my")
+    @ApiOperation(value = "更新个人信息", notes = "更新")
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest,
                                               HttpServletRequest request) {
         if (userUpdateMyRequest == null) {

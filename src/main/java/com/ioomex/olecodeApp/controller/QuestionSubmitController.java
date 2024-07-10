@@ -12,6 +12,7 @@ import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.vo.QuestionSubmitVO;
 import com.ioomex.olecodeApp.service.QuestionSubmitService;
 import com.ioomex.olecodeApp.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,11 +36,9 @@ public class QuestionSubmitController {
     /**
      * 提交题目
      *
-     * @param questionSubmitAddRequest
-     * @param request
-     * @return 提交记录的 id
      */
     @PostMapping("/")
+    @ApiOperation(value = "提交题目", notes = "提交题目")
     public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
                                                HttpServletRequest request) {
         if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
@@ -58,6 +57,7 @@ public class QuestionSubmitController {
      * @return
      */
     @PostMapping("/list/page")
+    @ApiOperation(value = "分页获取题目提交列表（除了管理员外，普通用户只能看到非答案、提交代码等公开信息）", notes = "分页获取题目提交列表（除了管理员外，普通用户只能看到非答案、提交代码等公开信息）")
     public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
                                                                          HttpServletRequest request) {
         long current = questionSubmitQueryRequest.getCurrent();

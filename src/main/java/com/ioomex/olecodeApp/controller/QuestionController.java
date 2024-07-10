@@ -17,6 +17,7 @@ import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.vo.QuestionVO;
 import com.ioomex.olecodeApp.service.QuestionService;
 import com.ioomex.olecodeApp.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
@@ -47,6 +48,7 @@ public class QuestionController {
      * @return 创建结果
      */
     @PostMapping("/add")
+    @ApiOperation(value = "创建题目", notes = "创建题目")
     public BaseResponse<Long> addQuestion(@RequestBody QuestionAddRequest questionAddRequest, HttpServletRequest request) {
         if (ObjectUtils.isEmpty(questionAddRequest)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -84,6 +86,7 @@ public class QuestionController {
      * @return
      */
     @PostMapping("/delete")
+    @ApiOperation(value = "删除题目", notes = "删除题目")
     public BaseResponse<Boolean> deleteQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (ObjectUtils.isNotEmpty(deleteRequest) || deleteRequest.getId() <= NumberConstant.ZERO) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -104,11 +107,10 @@ public class QuestionController {
     /**
      * 更新（仅管理员）
      *
-     * @param questionUpdateRequest
-     * @return
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @ApiOperation(value = "更新（仅管理员）", notes = "更新（仅管理员）")
     public BaseResponse<Boolean> updateQuestion(@RequestBody QuestionUpdateRequest questionUpdateRequest) {
         if (questionUpdateRequest == null || questionUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -144,6 +146,7 @@ public class QuestionController {
      * @return
      */
     @GetMapping("/get/vo")
+    @ApiOperation(value = "根据 id 获取", notes = "根据 id 获取")
     public BaseResponse<QuestionVO> getQuestionVOById(long id, HttpServletRequest request) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -158,11 +161,9 @@ public class QuestionController {
     /**
      * 分页获取列表（封装类）
      *
-     * @param questionQueryRequest
-     * @param request
-     * @return
      */
     @PostMapping("/list/page/vo")
+    @ApiOperation(value = "分页获取列表（封装类）", notes = "根据 id 获取")
     public BaseResponse<Page<QuestionVO>> listQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest, HttpServletRequest request) {
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
@@ -175,11 +176,9 @@ public class QuestionController {
     /**
      * 分页获取当前用户创建的资源列表
      *
-     * @param questionQueryRequest
-     * @param request
-     * @return
      */
     @PostMapping("/my/list/page/vo")
+    @ApiOperation(value = "分页获取当前用户创建的资源列表", notes = "分页获取当前用户创建的资源列表")
     public BaseResponse<Page<QuestionVO>> listMyQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest, HttpServletRequest request) {
         if (questionQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -197,12 +196,10 @@ public class QuestionController {
     /**
      * 分页获取题目列表（仅管理员）
      *
-     * @param questionQueryRequest
-     * @param request
-     * @return
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @ApiOperation(value = "分页获取题目列表（仅管理员）", notes = "分页获取题目列表（仅管理员）")
     public BaseResponse<Page<Question>> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest, HttpServletRequest request) {
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
@@ -219,6 +216,7 @@ public class QuestionController {
      * @return
      */
     @PostMapping("/edit")
+    @ApiOperation(value = "编辑（用户）", notes = "编辑（用户）")
     public BaseResponse<Boolean> editQuestion(@RequestBody QuestionEditRequest questionEditRequest, HttpServletRequest request) {
         if (questionEditRequest == null || questionEditRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
