@@ -4,6 +4,8 @@ import lombok.Data;
 
 /**
  * 题目用例
+ * @author yangwan
+ * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
  */
 @Data
 public class JudgeCase {

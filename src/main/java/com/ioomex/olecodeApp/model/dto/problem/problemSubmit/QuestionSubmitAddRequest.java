@@ -7,7 +7,8 @@ import java.io.Serializable;
 /**
  * 创建请求
  *
-
+ * @author yangwan
+ * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
  */
 @Data
 public class QuestionSubmitAddRequest implements Serializable {

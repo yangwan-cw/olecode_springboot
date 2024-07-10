@@ -7,8 +7,8 @@ import java.util.List;
 
 /**
  * 编辑请求
- *
-
+ * @author yangwan
+ * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
  */
 @Data
 public class QuestionEditRequest implements Serializable {
