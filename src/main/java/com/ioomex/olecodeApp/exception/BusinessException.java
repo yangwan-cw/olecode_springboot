@@ -2,6 +2,8 @@ package com.ioomex.olecodeApp.exception;
 
 import com.ioomex.olecodeApp.common.ErrorCode;
 
+import static com.ioomex.olecodeApp.common.ErrorCode.PARAMS_ERROR;
+
 /**
  * 自定义异常类
  *
@@ -14,6 +16,12 @@ public class BusinessException extends RuntimeException {
      * 错误码
      */
     private final int code;
+
+
+    public BusinessException(String message) {
+        super(message);
+        this.code = PARAMS_ERROR.getCode();
+    }
 
     public BusinessException(int code, String message) {
         super(message);

@@ -21,14 +21,17 @@ import com.ioomex.olecodeApp.model.vo.UserVO;
 import com.ioomex.olecodeApp.service.PostService;
 import com.ioomex.olecodeApp.service.UserService;
 import com.ioomex.olecodeApp.utils.SqlUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.core.collection.CollUtil;
 import org.apache.commons.lang3.ObjectUtils;
@@ -38,6 +41,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -124,8 +128,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "id", notId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
-        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
-                sortField);
+        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
         return queryWrapper;
     }
 
@@ -197,8 +200,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 分页
         PageRequest pageRequest = PageRequest.of((int) current, (int) pageSize);
         // 构造查询
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
-                .withPageable(pageRequest).withSorts(sortBuilder).build();
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withPageable(pageRequest).withSorts(sortBuilder).build();
         SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
         Page<Post> page = new Page<>();
         page.setTotal(searchHits.getTotalHits());
@@ -206,8 +208,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 查出结果后，从 db 获取最新动态数据（比如点赞数）
         if (searchHits.hasSearchHits()) {
             List<SearchHit<PostEsDTO>> searchHitList = searchHits.getSearchHits();
-            List<Long> postIdList = searchHitList.stream().map(searchHit -> searchHit.getContent().getId())
-                    .collect(Collectors.toList());
+            List<Long> postIdList = searchHitList.stream().map(searchHit -> searchHit.getContent().getId()).collect(Collectors.toList());
             List<Post> postList = baseMapper.selectBatchIds(postIdList);
             if (postList != null) {
                 Map<Long, List<Post>> idPostMap = postList.stream().collect(Collectors.groupingBy(Post::getId));
@@ -266,8 +267,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         }
         // 1. 关联查询用户信息
         Set<Long> userIdSet = postList.stream().map(Post::getUserId).collect(Collectors.toSet());
-        Map<Long, List<SysUser>> userIdUserListMap = userService.listByIds(userIdSet).stream()
-                .collect(Collectors.groupingBy(SysUser::getId));
+        Map<Long, List<SysUser>> userIdUserListMap = userService.listByIds(userIdSet).stream().collect(Collectors.groupingBy(SysUser::getId));
         // 2. 已登录，获取用户点赞、收藏状态
         Map<Long, Boolean> postIdHasThumbMap = new HashMap<>();
         Map<Long, Boolean> postIdHasFavourMap = new HashMap<>();

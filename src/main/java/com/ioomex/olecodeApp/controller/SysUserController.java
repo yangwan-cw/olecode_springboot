@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.mp.api.WxMpService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.DigestUtils;
@@ -67,14 +68,14 @@ public class SysUserController {
     @ApiOperation(value = "注册接口")
     @OperationLog(log = "注册接口")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
-        if (userRegisterRequest == null) {
+        if (ObjectUtils.isEmpty(userRegisterRequest)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         long result = userService.userRegister(userAccount, userPassword, checkPassword);
         return ResultUtils.success(result);
@@ -89,7 +90,7 @@ public class SysUserController {
      */
     @PostMapping("/login")
     public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
-        if (userLoginRequest == null) {
+        if (ObjectUtils.isEmpty(userLoginRequest)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         String userAccount = userLoginRequest.getUserAccount();
@@ -106,7 +107,7 @@ public class SysUserController {
      */
     @GetMapping("/login/wx_open")
     public BaseResponse<LoginUserVO> userLoginByWxOpen(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam("code") String code) {
+                                                       @RequestParam("code") String code) {
         WxOAuth2AccessToken accessToken;
         try {
             WxMpService wxService = wxOpenConfig.getWxMpService();
@@ -132,7 +133,7 @@ public class SysUserController {
      */
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
-        if (request == null) {
+        if (ObjectUtils.isEmpty(request)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         boolean result = userService.userLogout(request);
@@ -150,10 +151,6 @@ public class SysUserController {
         SysUser sysUser = userService.getLoginUser(request);
         return ResultUtils.success(userService.getLoginUserVO(sysUser));
     }
-
-    // endregion
-
-    // region 增删改查
 
     /**
      * 创建用户
@@ -206,7 +203,7 @@ public class SysUserController {
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
-            HttpServletRequest request) {
+                                            HttpServletRequest request) {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -263,7 +260,7 @@ public class SysUserController {
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
         Page<SysUser> userPage = userService.page(new Page<>(current, size),
-                userService.getQueryWrapper(userQueryRequest));
+          userService.getQueryWrapper(userQueryRequest));
         return ResultUtils.success(userPage);
     }
 
@@ -276,7 +273,7 @@ public class SysUserController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryRequest userQueryRequest,
-            HttpServletRequest request) {
+                                                       HttpServletRequest request) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -285,7 +282,7 @@ public class SysUserController {
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         Page<SysUser> userPage = userService.page(new Page<>(current, size),
-                userService.getQueryWrapper(userQueryRequest));
+          userService.getQueryWrapper(userQueryRequest));
         Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
         List<UserVO> userVO = userService.getUserVO(userPage.getRecords());
         userVOPage.setRecords(userVO);
@@ -303,7 +300,7 @@ public class SysUserController {
      */
     @PostMapping("/update/my")
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest,
-            HttpServletRequest request) {
+                                              HttpServletRequest request) {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

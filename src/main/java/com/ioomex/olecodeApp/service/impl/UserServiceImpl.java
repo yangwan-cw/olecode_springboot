@@ -3,10 +3,12 @@ package com.ioomex.olecodeApp.service.impl;
 import static com.ioomex.olecodeApp.constant.UserConstant.USER_LOGIN_STATE;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ioomex.olecodeApp.common.ErrorCode;
 import com.ioomex.olecodeApp.constant.CommonConstant;
+import com.ioomex.olecodeApp.constant.NumberConstant;
 import com.ioomex.olecodeApp.exception.BusinessException;
 import com.ioomex.olecodeApp.mapper.UserMapper;
 import com.ioomex.olecodeApp.model.dto.user.UserQueryRequest;
@@ -16,16 +18,19 @@ import com.ioomex.olecodeApp.model.vo.LoginUserVO;
 import com.ioomex.olecodeApp.model.vo.UserVO;
 import com.ioomex.olecodeApp.service.UserService;
 import com.ioomex.olecodeApp.utils.SqlUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 用户服务实现
@@ -40,7 +45,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
     /**
      * 盐值，混淆密码
      */
-    public static final String SALT = "yupi";
+    public static final String SALT = "ioomex";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -86,10 +91,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
-        if (userAccount.length() < 4) {
+        if (userAccount.length() < NumberConstant.FOUR) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号错误");
         }
-        if (userPassword.length() < 8) {
+        if (userPassword.length() < NumberConstant.EIGHT) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
         }
         // 2. 加密
@@ -100,7 +105,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
         queryWrapper.eq("userPassword", encryptPassword);
         SysUser sysUser = this.baseMapper.selectOne(queryWrapper);
         // 用户不存在
-        if (sysUser == null) {
+        if (ObjectUtils.isEmpty(sysUser)) {
             log.info("sysUser login failed, userAccount cannot match userPassword");
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
@@ -152,7 +157,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
         // 先判断是否已登录
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         SysUser currentSysUser = (SysUser) userObj;
-        if (currentSysUser == null || currentSysUser.getId() == null) {
+        if (ObjUtil.isEmpty(currentSysUser) || ObjUtil.isEmpty(currentSysUser.getId())){
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
         // 从数据库查询（追求性能的话可以注释，直接走缓存）
@@ -266,7 +271,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
         queryWrapper.like(StringUtils.isNotBlank(userProfile), "userProfile", userProfile);
         queryWrapper.like(StringUtils.isNotBlank(userName), "userName", userName);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
-                sortField);
+          sortField);
         return queryWrapper;
     }
 }
