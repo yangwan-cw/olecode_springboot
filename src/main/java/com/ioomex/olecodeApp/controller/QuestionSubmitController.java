@@ -12,6 +12,7 @@ import com.ioomex.olecodeApp.model.entity.SysUser;
 import com.ioomex.olecodeApp.model.vo.QuestionSubmitVO;
 import com.ioomex.olecodeApp.service.QuestionSubmitService;
 import com.ioomex.olecodeApp.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/question_submit")
 @Slf4j
+@Api(tags = "问题提交管理")
 public class QuestionSubmitController {
 
     @Resource

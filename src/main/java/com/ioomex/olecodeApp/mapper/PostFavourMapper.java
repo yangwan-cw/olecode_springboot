@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ioomex.olecodeApp.model.entity.Post;
 import com.ioomex.olecodeApp.model.entity.PostFavour;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -15,6 +16,7 @@ import org.apache.ibatis.annotations.Param;
  * @author ioomex
  * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
  */
+@Mapper
 public interface PostFavourMapper extends BaseMapper<PostFavour> {
 
     /**

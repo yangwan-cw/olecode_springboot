@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 操作日志表
@@ -17,6 +18,7 @@ import lombok.Data;
 @ApiModel(description = "操作日志表")
 @Data
 @TableName(value = "sys_operation_log")
+@ToString
 public class SysOperationLog {
     /**
      * id, 主键

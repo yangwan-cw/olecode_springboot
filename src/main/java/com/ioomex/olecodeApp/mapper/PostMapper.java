@@ -2,6 +2,8 @@ package com.ioomex.olecodeApp.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ioomex.olecodeApp.model.entity.Post;
+import org.apache.ibatis.annotations.Mapper;
+
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import java.util.List;
  * @author ioomex
  * @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
  */
+@Mapper
 public interface PostMapper extends BaseMapper<Post> {
 
     /**

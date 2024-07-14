@@ -183,6 +183,7 @@ public class LogInterceptor {
           .url(url)
           .build();
 
+        log.info("操作日志: {}", sysOperationLog);
         // 保存操作日志到数据库
         sysOperationLogMapper.insert(sysOperationLog);
     }

@@ -36,7 +36,7 @@ spring:
   # todo 需替换配置，然后取消注释
 #  elasticsearch:
 #    uris: http://localhost:9200
-#    username: root
+#    username: rootf
 #    password: 123456
   # 文件上传
   servlet:
@@ -55,7 +55,7 @@ server:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
   global-config:
     db-config:
       logic-delete-field: isDelete # 全局逻辑删除的实体字段名
