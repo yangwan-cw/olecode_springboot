@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 public enum QuestionSubmitLanguageEnum {
 
-    JAVA("java", "java"), CPLUSPLUS("c++", "c++"), GOLANG("golang", "golang");
+    JAVA("java", "java"), CPLUSPLUS("cpp", "c++"), GOLANG("go", "golang");
 
     private final String text;
 

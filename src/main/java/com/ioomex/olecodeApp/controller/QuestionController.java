@@ -55,6 +55,7 @@ public class QuestionController {
         if (ObjectUtils.isEmpty(questionAddRequest)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        // 查询题目列表id 获取到之后直接加
         Question question = new Question();
         BeanUtils.copyProperties(questionAddRequest, question);
         List<String> tags = questionAddRequest.getTags();
@@ -77,6 +78,9 @@ public class QuestionController {
         boolean result = questionService.save(question);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         long newQuestionId = question.getId();
+
+
+        // TODO: 调用服务
         return ResultUtils.success(newQuestionId);
     }
 
@@ -90,7 +94,7 @@ public class QuestionController {
     @PostMapping("/delete")
     @ApiOperation(value = "删除题目", notes = "删除题目")
     public BaseResponse<Boolean> deleteQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
-        if (ObjectUtils.isNotEmpty(deleteRequest) || deleteRequest.getId() <= NumberConstant.ZERO) {
+        if (ObjectUtils.isEmpty(deleteRequest) || deleteRequest.getId() <= NumberConstant.ZERO) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         SysUser SysUser = userService.getLoginUser(request);
@@ -108,7 +112,6 @@ public class QuestionController {
 
     /**
      * 更新（仅管理员）
-     *
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -162,7 +165,6 @@ public class QuestionController {
 
     /**
      * 分页获取列表（封装类）
-     *
      */
     @PostMapping("/list/page/vo")
     @ApiOperation(value = "分页获取列表（封装类）", notes = "根据 id 获取")
@@ -177,7 +179,6 @@ public class QuestionController {
 
     /**
      * 分页获取当前用户创建的资源列表
-     *
      */
     @PostMapping("/my/list/page/vo")
     @ApiOperation(value = "分页获取当前用户创建的资源列表", notes = "分页获取当前用户创建的资源列表")
@@ -197,7 +198,6 @@ public class QuestionController {
 
     /**
      * 分页获取题目列表（仅管理员）
-     *
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)

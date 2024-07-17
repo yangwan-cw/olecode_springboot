@@ -39,7 +39,7 @@ public class QuestionSubmitController {
      * 提交题目
      *
      */
-    @PostMapping("/")
+    @PostMapping("/data")
     @ApiOperation(value = "提交题目", notes = "提交题目")
     public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
                                                HttpServletRequest request) {
@@ -71,6 +71,7 @@ public class QuestionSubmitController {
         // 返回脱敏信息
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
     }
+
 
 
 }
