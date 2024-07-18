@@ -1,14 +1,17 @@
 package com.ioomex.olecodeApp.judge;
 
-import com.ioomex.olecodeApp.judge.model.ExecuteResult;
+
+import com.ioomex.olecodeApp.model.entity.QuestionSubmit;
 
 /**
- * JudgeService
- *
- * @author sutton
- * @since 2024-07-18 13:04
+ * 判题服务
  */
 public interface JudgeService {
 
-    ExecuteResult judge(Integer questionId);
+    /**
+     * 判题
+     * @param questionSubmitId
+     * @return
+     */
+    QuestionSubmit doJudge(long questionSubmitId);
 }

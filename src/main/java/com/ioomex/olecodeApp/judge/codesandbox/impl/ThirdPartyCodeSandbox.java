@@ -1,27 +1,17 @@
 package com.ioomex.olecodeApp.judge.codesandbox.impl;
 
-import com.ioomex.olecodeApp.judge.codesandbox.CodeSandBox;
-import com.ioomex.olecodeApp.judge.codesandbox.model.ExecuteCodeReQuest;
+
+import com.ioomex.olecodeApp.judge.codesandbox.CodeSandbox;
+import com.ioomex.olecodeApp.judge.codesandbox.model.ExecuteCodeRequest;
 import com.ioomex.olecodeApp.judge.codesandbox.model.ExecuteCodeResponse;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * ExampleCodeSandbox
- *
- * @author sutton
- * @since 2024-07-18 00:03
+ * 第三方代码沙箱（调用网上现成的代码沙箱）
  */
-@Slf4j
-public class ThirdPartyCodeSandbox implements CodeSandBox {
-    /**
-     * 代码机
-     *
-     * @param param 需要执行的代码
-     * @return 返回执行的代码执行结果
-     */
+public class ThirdPartyCodeSandbox implements CodeSandbox {
     @Override
-    public ExecuteCodeResponse executeCodeMachine(ExecuteCodeReQuest param) {
-        log.info("第三方代码机");
+    public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
+        System.out.println("第三方代码沙箱");
         return null;
     }
 }

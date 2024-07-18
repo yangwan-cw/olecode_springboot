@@ -8,28 +8,26 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * ExecuteCodeResponse
- *
- * @author sutton
- * @since 2024-07-18 00:00
- */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExecuteCodeResponse {
 
-    // 执行的状态
-    private Integer status;
-
-    // 执行的信息
-    private JudgeInfo judgeInfo;
-
-    // 输出用例
     private List<String> outputList;
 
-    // 输出信息
+    /**
+     * 接口信息
+     */
     private String message;
 
+    /**
+     * 执行状态
+     */
+    private Integer status;
+
+    /**
+     * 判题信息
+     */
+    private JudgeInfo judgeInfo;
 }
