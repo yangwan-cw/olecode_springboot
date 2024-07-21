@@ -9,8 +9,6 @@ import java.util.List;
 
 /**
  * 查询请求
- *
-
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -35,6 +33,21 @@ public class QuestionQueryRequest extends PageRequest implements Serializable {
      * 标签列表
      */
     private List<String> tags;
+
+    /**
+     * 难度
+     */
+    private Integer difficultyLevel;
+
+    /**
+     * 题目状态
+     */
+    private Integer status;
+
+    /**
+     * 查询 keyword
+     */
+    private String searchKey;
 
     /**
      * 题目答案

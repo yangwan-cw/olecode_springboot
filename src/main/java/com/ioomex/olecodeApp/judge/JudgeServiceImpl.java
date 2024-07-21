@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class JudgeServiceImpl implements JudgeService {
+public class  JudgeServiceImpl implements JudgeService {
 
     @Resource
     private QuestionService questionService;

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ioomex.olecodeApp.common.BaseResponse;
 import com.ioomex.olecodeApp.common.ErrorCode;
 import com.ioomex.olecodeApp.common.ResultUtils;
+import com.ioomex.olecodeApp.constant.CommonConstant;
 import com.ioomex.olecodeApp.exception.BusinessException;
 import com.ioomex.olecodeApp.model.dto.problem.problemSubmit.QuestionSubmitAddRequest;
 import com.ioomex.olecodeApp.model.dto.problem.problemSubmit.QuestionSubmitQueryRequest;
@@ -15,6 +16,9 @@ import com.ioomex.olecodeApp.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/question_submit")
@@ -37,7 +42,6 @@ public class QuestionSubmitController {
 
     /**
      * 提交题目
-     *
      */
     @PostMapping("/data")
     @ApiOperation(value = "提交题目", notes = "提交题目")
@@ -46,9 +50,23 @@ public class QuestionSubmitController {
         if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
+
         final SysUser loginUser = userService.getLoginUser(request);
+
+        submitThrottling(loginUser);
         long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
         return ResultUtils.success(questionSubmitId);
+    }
+
+    private void submitThrottling(SysUser loginUser) {
+//        // 限流： 你的提交过于频繁，请稍候重试。
+//        ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
+//        String key = "submit_rate_limit:" + loginUser.getId();
+//        if (valueOps.get(key) != null) {
+//            throw new BusinessException(ErrorCode.RATE_LIMIT_ERROR, "你的提交过于频繁，请稍候重试");
+//        }
+//        valueOps.set(key, "1", 10, TimeUnit.MINUTES);
     }
 
     /**
@@ -66,12 +84,11 @@ public class QuestionSubmitController {
         long size = questionSubmitQueryRequest.getPageSize();
         // 从数据库中查询原始的题目提交分页信息
         Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
-                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
+          questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
         final SysUser loginUser = userService.getLoginUser(request);
         // 返回脱敏信息
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
     }
-
 
 
 }
