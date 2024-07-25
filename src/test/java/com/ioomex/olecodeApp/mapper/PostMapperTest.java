@@ -1,6 +1,5 @@
 package com.ioomex.olecodeApp.mapper;
 
-import com.ioomex.olecodeApp.model.entity.Post;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;

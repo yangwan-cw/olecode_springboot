@@ -14,7 +14,7 @@ spring:
   # session 配置
   session:
     # todo 取消注释开启分布式 session（须先配置 Redis）
-    # store-type: redis
+    store-type: redis
     # 30 天过期
     timeout: 2592000
   # 数据库配置
@@ -31,7 +31,6 @@ spring:
     host: localhost
     port: 6379
     timeout: 5000
-    password: 9978@wzb
   # Elasticsearch 配置
   # todo 需替换配置，然后取消注释
 #  elasticsearch:
@@ -45,7 +44,7 @@ spring:
       max-file-size: 10MB
 server:
   address: 0.0.0.0
-  port: 8998
+  port: 8991
   servlet:
     context-path: /api
     # cookie 30 天过期
