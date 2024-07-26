@@ -1,14 +1,16 @@
 package com.ioomex.olecodeApp.utils;
  
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.*;
+import org.springframework.data.redis.connection.RedisGeoCommands;
+import org.springframework.data.redis.core.GeoOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.data.redis.connection.RedisGeoCommands.DistanceUnit;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
  
 @Component
@@ -563,6 +565,5 @@ public class RedisUtil {
             return 0;
         }
     }
- 
  
 }
