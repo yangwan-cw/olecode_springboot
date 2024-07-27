@@ -2,6 +2,7 @@ package com.ioomex.olecodeApp.judge.codesandbox.impl;
 
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import co.elastic.clients.elasticsearch.nodes.Http;
@@ -22,13 +23,21 @@ import java.util.List;
  */
 @Slf4j
 public class RemoteCodeSandbox implements CodeSandbox {
-    private final static String URL = "http://localhost:9000/api/code/execute";
+    private final static String URL = "http://localhost:9000/api/code/native/execute";
+
+    private final static String AUTH = "auth";
+
+    private final static String MD5_HASH_kEY= "auth";
+
+
 
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
         log.info("远程代码沙箱");
+        String encode = DigestUtil.md5Hex(MD5_HASH_kEY);
         String json = JSONUtil.toJsonStr(executeCodeRequest);
         String body = HttpUtil.createPost(URL)
+          .header(AUTH,encode)
           .body(json)
           .execute()
           .body();

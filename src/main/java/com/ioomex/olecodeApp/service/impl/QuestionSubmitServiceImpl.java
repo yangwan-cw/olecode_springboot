@@ -7,6 +7,7 @@ import com.ioomex.olecodeApp.constant.CommonConstant;
 import com.ioomex.olecodeApp.enums.QuestionSubmitLanguageEnum;
 import com.ioomex.olecodeApp.enums.QuestionSubmitStatusEnum;
 import com.ioomex.olecodeApp.exception.BusinessException;
+import com.ioomex.olecodeApp.judge.JudgeService;
 import com.ioomex.olecodeApp.model.dto.problem.problemSubmit.QuestionSubmitAddRequest;
 import com.ioomex.olecodeApp.model.dto.problem.problemSubmit.QuestionSubmitQueryRequest;
 import com.ioomex.olecodeApp.model.entity.Question;
@@ -19,6 +20,8 @@ import com.ioomex.olecodeApp.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -27,6 +30,7 @@ import com.ioomex.olecodeApp.service.QuestionSubmitService;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +40,10 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
 
     @Resource
     private UserService userService;
+
+    @Resource
+    @Lazy
+    private JudgeService judgeService;
 
 
     /**
@@ -73,7 +81,11 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         boolean save = this.save(questionSubmit);
         if (!save) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据插入失败");
-        }
+        }Long questionSubmitId = questionSubmit.getId();
+// 执行判题服务
+        CompletableFuture.runAsync(() -> {
+            judgeService.doJudge(questionSubmitId);
+        });
         return questionSubmit.getId();
     }
 
