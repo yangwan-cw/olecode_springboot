@@ -40,6 +40,9 @@ public class QuestionSubmitController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
+
     /**
      * 提交题目
      */
@@ -60,13 +63,13 @@ public class QuestionSubmitController {
     }
 
     private void submitThrottling(SysUser loginUser) {
-//        // 限流： 你的提交过于频繁，请稍候重试。
-//        ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
-//        String key = "submit_rate_limit:" + loginUser.getId();
-//        if (valueOps.get(key) != null) {
-//            throw new BusinessException(ErrorCode.RATE_LIMIT_ERROR, "你的提交过于频繁，请稍候重试");
-//        }
-//        valueOps.set(key, "1", 10, TimeUnit.MINUTES);
+        // 限流： 你的提交过于频繁，请稍候重试。
+        ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
+        String key = "submit_rate_limit:" + loginUser.getId();
+        if (valueOps.get(key) != null) {
+            throw new BusinessException(ErrorCode.RATE_LIMIT_ERROR, "你的提交过于频繁，请稍候重试");
+        }
+        valueOps.set(key, "1", 10, TimeUnit.SECONDS);
     }
 
     /**

@@ -16,7 +16,8 @@ public enum ErrorCode {
     FORBIDDEN_ERROR(40300, "禁止访问"),
     SYSTEM_ERROR(50000, "系统内部异常"),
     OPERATION_ERROR(50001, "操作失败"),
-    RATE_LIMIT_ERROR(42900, "请求过于频繁，请稍候重试。");
+    RATE_LIMIT_ERROR(42900, "请求过于频繁，请稍候重试。"),
+    REMOTE_ERROR(500010, "远程服务调用失败");
 
     /**
      * 状态码
