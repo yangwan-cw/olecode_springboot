@@ -8,7 +8,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# 构建镜像12
+# 构建镜像123
 RUN mvn package -DskipTests
 
 # Run the web service on container startup.
