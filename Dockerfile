@@ -17,7 +17,7 @@ FROM openjdk:11-jre
 # 设置维护者信息
 MAINTAINER iooemx
 
-# 设置工作目录
+# 设置第二阶段工作目录
 WORKDIR /
 
 # 从构建阶段复制生成的JAR文件到运行镜像中
