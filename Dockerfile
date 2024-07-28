@@ -13,5 +13,5 @@ COPY target/olecode-springboot-0.0.1-SNAPSHOT.jar app.jar
 # 暴露应用程序端口
 EXPOSE 8080
 
-# 运行应用程序
+# 运行应用程序，不使用jenkins le
 ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]
