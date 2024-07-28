@@ -3,7 +3,7 @@
 # @from <a href="https://github.com/yangwan-cw">yangwan-cw仓库</a>
 FROM maven:3.8.1-jdk-8-slim as builder
 
-# Copy local code to the container image.
+# 设置工作目录
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
