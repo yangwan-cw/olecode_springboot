@@ -8,8 +8,8 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# 构建镜像
+# 构建镜像12345
 RUN mvn package -DskipTests
 
-# 运行服务.
+# 运行命令11
 CMD ["java","-jar","/app/target/olecode-springboot-0.0.1-SNAPSHOT.jar","--spring.profiles.active=prod"]
