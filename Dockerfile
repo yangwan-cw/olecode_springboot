@@ -8,8 +8,8 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# 构建镜像1234567
+# 构建镜像
 RUN mvn package -DskipTests
 
-# Run the web service on container startup.
+# 运行服务.
 CMD ["java","-jar","/app/target/olecode-springboot-0.0.1-SNAPSHOT.jar","--spring.profiles.active=prod"]
