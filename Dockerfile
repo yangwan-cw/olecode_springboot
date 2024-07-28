@@ -11,5 +11,5 @@ COPY src ./src
 # 构建
 RUN mvn package -DskipTests
 
-# 运行命令123
+# 运行命令1234
 CMD ["java","-jar","/app/target/olecode-springboot-0.0.1-SNAPSHOT.jar","--spring.profiles.active=prod"]
