@@ -39,6 +39,7 @@ class OleCodeMainApplicationTests {
           "    }\n" +
           "}";
 
+        // 测试 jenkins
         String language = QuestionSubmitLanguageEnum.JAVA.getValue();
         List<String> inputList = Arrays.asList("1 2", "3 4");
         ExecuteCodeRequest executeCodeRequest = ExecuteCodeRequest.builder()
