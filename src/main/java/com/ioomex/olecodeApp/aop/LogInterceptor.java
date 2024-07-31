@@ -49,7 +49,6 @@ public class LogInterceptor {
      * 记录请求细节，执行方法，记录响应细节，并保存操作日志。
      *
      * @param point        ProceedingJoinPoint，被拦截方法的连接点
-     * @param operationLog OperationLog 注解实例
      * @return 被拦截方法的执行结果
      * @throws Throwable 方法执行过程中可能抛出的异常
      */
